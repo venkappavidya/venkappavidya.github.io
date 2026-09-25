@@ -592,6 +592,8 @@ html.dark .icon-btn .icon-sun { display: none; }
   flex: none;
 }
 .note--honour::before { content: "Honour"; }
+.note a { color: var(--ink); text-decoration-color: var(--line-strong); }
+.note a:hover { text-decoration-color: currentColor; }
 
 /* ---------------------------------------------------------------- tags -- */
 
