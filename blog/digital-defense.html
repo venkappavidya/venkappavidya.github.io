@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uncovering Cyber Threats with RAG and Phi-3.5 | Vidya Venkappa</title>
+<meta name="description" content="Building a retrieval-augmented pipeline over five years of Microsoft Digital Defense Reports with ChromaDB, LangChain and Phi-3.5, and what it revealed about how attacks evolved between 2020 and 2024.">
+<meta name="author" content="Vidya Venkappa">
+<link rel="canonical" href="https://venkappavidya.github.io/blog/digital-defense.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Uncovering Cyber Threats with RAG and Phi-3.5 | Vidya Venkappa">
+<meta property="og:description" content="Building a retrieval-augmented pipeline over five years of Microsoft Digital Defense Reports with ChromaDB, LangChain and Phi-3.5, and what it revealed about how attacks evolved between 2020 and 2024.">
+<meta property="og:url" content="https://venkappavidya.github.io/blog/digital-defense.html">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%2316181b'/><text x='50' y='71' font-size='62' font-family='Georgia,serif' fill='%23fdfdfc' text-anchor='middle'>V</text></svg>">
+
+<script src="../assets/js/theme-init.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
+
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="wordmark" href="../index.html">Vidya Venkappa</a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#experience">Experience</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../blog.html" aria-current="page">Writing</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav__actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch colour theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+        </button>
+        <button class="icon-btn nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article class="article">
+    <div class="container">
+
+      <p style="margin-bottom:2rem">
+        <a class="backlink" href="../blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>
+      </p>
+
+      <header class="article__header">
+        <p class="eyebrow">Project write-up</p>
+        <h1 class="article__title">Uncovering Cyber Threats with RAG and Phi-3.5</h1>
+        <div class="article__meta">
+          <span>February 2025</span>
+          <span class="dot">·</span>
+          <span>4 min read</span>
+          <span class="dot">·</span>
+          <span>Vidya Venkappa</span>
+        </div>
+        <ul class="tags article__tags"><li>RAG</li><li>LLM</li><li>Security</li><li>ChromaDB</li><li>LangChain</li></ul>
+      </header>
+
+      <div class="prose">
+<p>Staying ahead of emerging threats requires more than access to good intelligence. It requires the ability to extract something actionable from a great deal of data. Microsoft's Digital Defense Reports are a genuine trove of information on the state of cybersecurity, but at 80 to 120 pages each, pulling the relevant parts out by hand is slow and easy to get wrong.</p>
+<p>For this project I built a retrieval-augmented generation pipeline over the Microsoft Digital Defense Reports from 2020 through 2024, giving security practitioners fast access to threat intelligence and the mitigation strategies that go with it.</p>
+<h2>Why these reports are hard to analyse</h2>
+<p>The reports are comprehensive, which is exactly what makes them difficult:</p>
+<ul>
+<li><strong>Volume.</strong> Each report spans 80 to 120 pages of dense material.</li>
+<li><strong>Complex structure.</strong> Multi-column layouts, tables and graphics defeat naive text extraction.</li>
+<li><strong>Temporal change.</strong> Tracking how a threat evolved across five yearly reports is a substantial manual effort.</li>
+<li><strong>Context.</strong> Relating a specific threat to the broader security picture takes domain expertise.</li>
+</ul>
+<p>The pipeline had to do more than extract text. It had to contextualise it well enough to answer specific security questions.</p>
+<h2>Building the pipeline</h2>
+<h3>1. Ingestion and processing</h3>
+<p>The first job was turning PDFs into usable text:</p>
+<ul>
+<li>Used the <code>unstructured</code> Python library to extract text while preserving the semantic structure of the content</li>
+<li>Processed roughly 3,000 tokens per page across five years of reports</li>
+<li>Maintained the connections between related sections despite the complex document layout</li>
+</ul>
+<h3>2. A searchable knowledge base</h3>
+<p>To make any of that queryable:</p>
+<ul>
+<li>Segmented text into manageable chunks with LangChain's text splitters</li>
+<li>Generated embeddings for each chunk to capture semantic meaning</li>
+<li>Stored those embeddings in <strong>ChromaDB</strong>, a vector database built for similarity search</li>
+<li>Combined semantic similarity with keyword matching in the retrieval step, which measurably improved accuracy over pure vector search</li>
+</ul>
+<h3>3. Answer generation</h3>
+<ul>
+<li>Used Microsoft's <strong>Phi-3.5</strong> to generate responses grounded in the retrieved context</li>
+<li>Engineered prompts that push the model toward identifying significant threats and concrete mitigations rather than summarising</li>
+<li>Built an evaluation framework measuring accuracy and relevance against human-reviewed baselines</li>
+</ul>
+<h2>What the data showed: threat evolution, 2020-2024</h2>
+<p>Querying five years at once surfaced a clear trajectory.</p>
+<h3>2020: pandemic-driven threats</h3>
+<p>Human-operated ransomware spiked, frequently initiated through brute-force attacks on remote desktop proxies. Phishing campaigns exploited COVID-19 anxiety by impersonating trusted sources such as the World Health Organization. Banking trojans picked up modular capabilities for credential theft, and the first examples of adversarial machine learning attacks appeared.</p>
+<h3>2021: supply chain vulnerabilities</h3>
+<p>Ransomware kept climbing, increasingly delivered via targeted spear-phishing. Supply chain vulnerabilities in IoT and OT devices became prominent. Disinformation campaigns began targeting organisational security posture as a precursor to an attack.</p>
+<h3>2022: legacy system exploitation</h3>
+<p>Legacy systems and poor security hygiene emerged as the primary vulnerability points. Nation-state ransomware activity showed markedly more sophistication and targeting, and threat actor groups started coordinating more visibly.</p>
+<h3>2023: identity-based attacks</h3>
+<p>Large-scale ransomware campaigns expanded to target both endpoints and cloud infrastructure. Identity attacks adopted advanced techniques such as adversary-in-the-middle. Criminal activity increasingly turned on zero-day software vulnerabilities.</p>
+<h3>2024: nation-state and cloud threats</h3>
+<p>Nation-state actors amplified attacks with geopolitical motivations. Cyber-enabled influence operations grew more sophisticated, and attack paths targeting critical assets in cloud environments became substantially more complex.</p>
+<h2>Why build this rather than use an off-the-shelf tool</h2>
+<p>Tools like Azure Security Copilot offer streamlined workflows for analysing security documents. A custom pipeline still bought me several things:</p>
+<ul>
+<li><strong>Customisation.</strong> Retrieval parameters tuned to the specific shape of security analysis</li>
+<li><strong>Context preservation.</strong> Better retention of relationships between concepts across different reports</li>
+<li><strong>Longitudinal analysis.</strong> Tracking a threat's evolution across multiple years, which is exactly what general-purpose tools handle worst</li>
+<li><strong>Portability.</strong> The same approach adapts to document types well beyond Microsoft's reports</li>
+</ul>
+<h2>Practical applications</h2>
+<ul>
+<li><strong>Rapid threat intelligence.</strong> Security teams can query historical threat data to inform a decision they need to make today.</li>
+<li><strong>Mitigation strategy.</strong> Generate evidence-based recommendations for specific threats.</li>
+<li><strong>Training.</strong> Build targeted security awareness material from the threats that actually matter.</li>
+<li><strong>Executive reporting.</strong> Produce concise summaries of a complex threat landscape for leadership.</li>
+</ul>
+<h2>Where this goes next</h2>
+<ul>
+<li>Integration with real-time threat intelligence feeds, so historical analysis sits alongside current data</li>
+<li>Support for multi-language reports</li>
+<li>Analysis of diagrams and charts, to recover the insights currently locked in non-textual content</li>
+<li>Custom visualisation tools for representing threat evolution over time</li>
+</ul>
+<h2>Conclusion</h2>
+<p>Combining retrieval-augmented generation with Phi-3.5 changed what it costs to understand a complex security corpus. The result gives practitioners a clearer read on the threat landscape and a concrete set of strategies for protecting their organisations.</p>
+<p>In a field where threats evolve continuously, tooling that can extract, contextualise and present security intelligence quickly is no longer a luxury.</p>
+<p class="callout">If you are working on RAG pipelines for security intelligence, I would be glad to compare notes. <a href="../index.html#contact">Get in touch</a>.</p>
+      </div>
+
+      <div class="card__links" style="margin-top:2.5rem"><a href="https://github.com/vidyavenkappa/Microsoft-Defense-Report-Analysis" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z"/></svg>View the repository</a></div>
+
+      <nav class="post-nav" aria-label="More posts">
+        <a href="personal-website.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span><span class="label">Previous</span>My Journey Creating a Personal Webpage with AI Tools</span></a>
+        <a href="compare-ai-tools.html" style="text-align:right"><span><span class="label">Next</span>Navigating the AI Research Tool Landscape</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p style="margin:0">© <span data-year>2026</span> Vidya Venkappa</p>
+    <nav aria-label="Footer">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../blog.html">Writing</a>
+      <a href="mailto:venkappavidya@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/vidya-venkappa/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/vidyavenkappa" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

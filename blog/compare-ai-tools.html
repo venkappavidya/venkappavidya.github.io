@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navigating the AI Research Tool Landscape | Vidya Venkappa</title>
+<meta name="description" content="A hands-on comparison of Grok DeepSearch, Perplexity Pro, Gemini 1.5 Flash and ChatGPT Deep Research across speed, depth, output structure, follow-up handling and source trust.">
+<meta name="author" content="Vidya Venkappa">
+<link rel="canonical" href="https://venkappavidya.github.io/blog/compare-ai-tools.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Navigating the AI Research Tool Landscape | Vidya Venkappa">
+<meta property="og:description" content="A hands-on comparison of Grok DeepSearch, Perplexity Pro, Gemini 1.5 Flash and ChatGPT Deep Research across speed, depth, output structure, follow-up handling and source trust.">
+<meta property="og:url" content="https://venkappavidya.github.io/blog/compare-ai-tools.html">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%2316181b'/><text x='50' y='71' font-size='62' font-family='Georgia,serif' fill='%23fdfdfc' text-anchor='middle'>V</text></svg>">
+
+<script src="../assets/js/theme-init.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
+
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="wordmark" href="../index.html">Vidya Venkappa</a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#experience">Experience</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../blog.html" aria-current="page">Writing</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav__actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch colour theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+        </button>
+        <button class="icon-btn nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article class="article">
+    <div class="container">
+
+      <p style="margin-bottom:2rem">
+        <a class="backlink" href="../blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>
+      </p>
+
+      <header class="article__header">
+        <p class="eyebrow">Analysis</p>
+        <h1 class="article__title">Navigating the AI Research Tool Landscape</h1>
+        <div class="article__meta">
+          <span>January 2025</span>
+          <span class="dot">·</span>
+          <span>3 min read</span>
+          <span class="dot">·</span>
+          <span>Vidya Venkappa</span>
+        </div>
+        <ul class="tags article__tags"><li>AI Tools</li><li>Research</li><li>Evaluation</li></ul>
+      </header>
+
+      <div class="prose">
+<p>Choosing the right AI research tool has a real effect on both the efficiency and the quality of research. This is a reflection on comparing several of them directly, and what I concluded about their strengths, their limits, and where each one actually belongs.</p>
+<h2>The comparison problem</h2>
+<p>Comparing research tools with long, discursive outputs is harder than it sounds. Each one approaches queries differently, structures its response differently, and handles follow-up questions on its own terms. Even the volume of sources varied dramatically:</p>
+<ul>
+<li><strong>Grok DeepSearch</strong> processed over 100 sources in under a minute</li>
+<li><strong>Gemini 1.5 Flash</strong> took roughly seven minutes, but offered research plan customisation</li>
+</ul>
+<p>To evaluate them systematically, I built a framework around five factors:</p>
+<ol>
+<li><strong>Speed:</strong> how quickly results were generated</li>
+<li><strong>Depth of research:</strong> the number and quality of sources</li>
+<li><strong>Structure of output:</strong> organisation and clarity of the response</li>
+<li><strong>Follow-up handling:</strong> whether the tool can revisit research or adapt prior findings</li>
+<li><strong>Contextual understanding:</strong> capacity to engage meaningfully and refine the question</li>
+</ol>
+<h2>Source accuracy and trust</h2>
+<p>Reliability varied according to each system's retrieval and synthesis mechanism.</p>
+<ul>
+<li><strong>Perplexity Pro</strong> compiled structured summaries with citations efficiently, but occasionally included non-peer-reviewed sources.</li>
+<li><strong>Grok DeepSearch</strong> retrieved a great many sources but offered little detailed reasoning or source validation.</li>
+<li><strong>Gemini 1.5 Flash</strong> enabled structured research planning, but did not conduct follow-up queries beyond its initial plan.</li>
+<li><strong>ChatGPT Deep Research</strong> offered good contextual insight but did not repeat research for follow-ups, making its responses more conversational than data-driven.</li>
+</ul>
+<p>Verifying AI-generated research still means cross-referencing against established academic databases: Google Scholar, Semantic Scholar, policy documents. Even a tool that is 90% accurate requires critical assessment before you rely on it for an academic or policy decision.</p>
+<h2>What the comparison taught me</h2>
+<p>Running the tools side by side sharpened my ability to evaluate new ones, largely by exposing three axes of real difference:</p>
+<p><strong>Research structure.</strong> Gemini 1.5 Flash and Perplexity Pro generate a research plan; Grok DeepSearch and ChatGPT Deep Research take a more direct route to an answer.</p>
+<p><strong>Follow-up handling.</strong> ChatGPT Deep Research adapts its responses based on prior context, whereas Perplexity Pro and Grok DeepSearch conduct fresh research for each follow-up.</p>
+<p><strong>User experience.</strong> Tools with interactive research planning give you better control, but cost you time to get it.</p>
+<h2>A decision framework</h2>
+<p>Which tool to reach for depends almost entirely on what you are optimising:</p>
+<ul>
+<li><strong>Speed above all:</strong> Grok DeepSearch, for rapid results</li>
+<li><strong>Structured, cited research, quickly:</strong> Perplexity Pro strikes the best balance</li>
+<li><strong>You want to shape the research plan:</strong> Gemini 1.5 Flash provides interactive planning</li>
+<li><strong>Contextual understanding and adaptation matter most:</strong> ChatGPT Deep Research</li>
+</ul>
+<h2>Choosing a model, not just a tool</h2>
+<p>When selecting an LLM for research specifically, the need should drive the choice:</p>
+<ul>
+<li><strong>Academic research requiring citations:</strong> a GPT-4 class model with retrieval; strong citation capability</li>
+<li><strong>Quick exploratory research:</strong> Claude 3 Opus; a good balance of speed and depth</li>
+<li><strong>Complex, multi-step reasoning:</strong> Gemini 1.5 Pro; structured thinking process</li>
+<li><strong>Domain-specific research:</strong> specialised vertical models fine-tuned for the field</li>
+<li><strong>Multilingual research:</strong> GPT-4 or Gemini 1.5; superior multilingual coverage</li>
+</ul>
+<p>The selection should be guided by research complexity, time constraints, citation requirements, integration needs, and cost. More capable models are not free, and they are not always necessary.</p>
+<h2>Applications to the Sustainable Development Goals</h2>
+<p>These tools can meaningfully support SDG work by expediting policy research across diverse global contexts, synthesising implementation best practices, and helping distribute knowledge more equitably to underrepresented regions.</p>
+<p>That potential comes with obligations. Bias mitigation, source transparency and responsible use have to guide any deployment of these tools in academic or professional research.</p>
+<h2>Conclusion</h2>
+<p>Each tool revealed a distinct profile. Grok DeepSearch provided rapid but less nuanced insight. Perplexity Pro offered structure, though sometimes with limited transparency about its full source list. Gemini 1.5 Flash allowed controlled, methodical research but lacked adaptability. ChatGPT Deep Research excelled at contextual refinement.</p>
+<p>For my own work, ChatGPT Deep Research provided the most engaging and adaptive experience, which makes it my default for research that depends on contextual understanding. But the optimal choice genuinely varies with the priority: speed, depth, structure, or context.</p>
+<p>What the exercise reinforced most is the discipline around the tools rather than the tools themselves: engage critically with AI-generated research, cross-reference findings against established sources, select for your actual priority, and understand what each platform cannot do. As these systems keep evolving, having a systematic way to evaluate them matters more than any single verdict.</p>
+      </div>
+
+      
+
+      <nav class="post-nav" aria-label="More posts">
+        <a href="digital-defense.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span><span class="label">Previous</span>Uncovering Cyber Threats with RAG and Phi-3.5</span></a>
+        <a href="security-incidents.html" style="text-align:right"><span><span class="label">Next</span>Predicting Security Incidents with Machine Learning</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p style="margin:0">© <span data-year>2026</span> Vidya Venkappa</p>
+    <nav aria-label="Footer">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../blog.html">Writing</a>
+      <a href="mailto:venkappavidya@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/vidya-venkappa/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/vidyavenkappa" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

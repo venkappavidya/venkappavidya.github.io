@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predicting Security Incidents with Machine Learning | Vidya Venkappa</title>
+<meta name="description" content="Building an 80%-accurate CatBoost classifier over Microsoft&#x27;s GUIDE dataset (13 million data points, 1.6 million alerts), and what the feature analysis revealed about how attacks actually arrive.">
+<meta name="author" content="Vidya Venkappa">
+<link rel="canonical" href="https://venkappavidya.github.io/blog/security-incidents.html">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Predicting Security Incidents with Machine Learning | Vidya Venkappa">
+<meta property="og:description" content="Building an 80%-accurate CatBoost classifier over Microsoft&#x27;s GUIDE dataset (13 million data points, 1.6 million alerts), and what the feature analysis revealed about how attacks actually arrive.">
+<meta property="og:url" content="https://venkappavidya.github.io/blog/security-incidents.html">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%2316181b'/><text x='50' y='71' font-size='62' font-family='Georgia,serif' fill='%23fdfdfc' text-anchor='middle'>V</text></svg>">
+
+<script src="../assets/js/theme-init.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
+
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="wordmark" href="../index.html">Vidya Venkappa</a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#experience">Experience</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#research">Research</a></li>
+        <li><a href="../blog.html" aria-current="page">Writing</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav__actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch colour theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+        </button>
+        <button class="icon-btn nav__toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <article class="article">
+    <div class="container">
+
+      <p style="margin-bottom:2rem">
+        <a class="backlink" href="../blog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>All writing</a>
+      </p>
+
+      <header class="article__header">
+        <p class="eyebrow">Project write-up</p>
+        <h1 class="article__title">Predicting Security Incidents with Machine Learning</h1>
+        <div class="article__meta">
+          <span>December 2024</span>
+          <span class="dot">·</span>
+          <span>3 min read</span>
+          <span class="dot">·</span>
+          <span>Vidya Venkappa</span>
+        </div>
+        <ul class="tags article__tags"><li>Machine Learning</li><li>CatBoost</li><li>Security</li><li>MITRE ATT&amp;CK</li></ul>
+      </header>
+
+      <div class="prose">
+<p>Being able to predict and prevent a security incident before it happens is worth a great deal more than responding well after the fact. This project built a machine learning model to predict security incidents in Microsoft systems using the GUIDE dataset.</p>
+<h2>Project overview</h2>
+<p>The goal was a classification model capable of analysing patterns in Microsoft's GUIDE dataset to predict potential security incidents. The dataset is substantial: <strong>13 million data points across 33 entity types, covering 1.6 million alerts and 1 million annotated incidents from over 6,100 organisations</strong>.</p>
+<p>Using CatBoost and detailed feature engineering, the final model reached <strong>80% accuracy</strong>.</p>
+<h2>Data analysis and preparation</h2>
+<p>Working through the dataset surfaced several things worth knowing before modelling anything:</p>
+<ul>
+<li>Only <strong>35%</strong> of detected incidents are classified as true positives requiring immediate attention</li>
+<li><strong>Initial Access</strong> attacks represent <strong>70%</strong> of all security incidents, followed by Suspicious Activity (10.8%) and Impact (7.2%)</li>
+<li><strong>Windows</strong> systems account for 90.88% of affected systems, then Linux (7.55%) and macOS (1.51%)</li>
+<li>Incidents peak at <strong>5:00 PM</strong> and are generally more frequent during nighttime hours</li>
+</ul>
+<p>Preparation involved converting categorical values into meaningful numeric representations, web scraping with Beautiful Soup to decode certain numeric codes, cleaning and imputing missing data, and creating temporal features to capture the attack-time patterns above.</p>
+<h2>Feature engineering and selection</h2>
+<p>Feature engineering mattered more to the final result than model choice did. Correlation analysis across the dataset identified the most predictive variables:</p>
+<ul>
+<li>OS family identification (Windows, Linux, macOS)</li>
+<li>MITRE ATT&amp;CK technique categorisation, with TA0001 (Initial Access) predominant</li>
+<li>Temporal patterns of attack occurrence</li>
+<li>Host and network-based indicators</li>
+</ul>
+<p>I used correlation matrices to select features with strong relationships to incident grades, following a consistent process: understand the feature characteristics and relationships, clean and impute, then select the columns with real correlation to incident classification.</p>
+<h2>Model development</h2>
+<p>After trying several classification algorithms, <strong>CatBoost</strong> came out ahead. The architecture ran in three stages: feature understanding and selection, training and fine-tuning, then rigorous evaluation.</p>
+<p>CatBoost suited this dataset specifically because:</p>
+<ul>
+<li>It handles categorical variables natively, without extensive preprocessing</li>
+<li>It is robust to outliers and missing data</li>
+<li>It performs well on imbalanced classification problems, which security incident detection very much is</li>
+</ul>
+<h2>Results and MITRE ATT&amp;CK analysis</h2>
+<p>The final model achieved <strong>80% accuracy</strong>, identifying potential security incidents while keeping false positives in check.</p>
+<p>The analysis also surfaced the most common MITRE ATT&amp;CK techniques in the dataset:</p>
+<ul>
+<li><strong>T1078: Valid Accounts.</strong> By far the most prevalent attack vector.</li>
+<li><strong>T1566: Phishing.</strong> The second most common initial access technique.</li>
+<li><strong>T1110: Brute Force.</strong> Still significant, despite years of security advancement.</li>
+<li><strong>T1133: External Remote Services.</strong> Exploiting vulnerabilities in remote access.</li>
+<li><strong>T1087: Account Discovery.</strong> Attackers mapping internal network accounts.</li>
+</ul>
+<p>That ranking is directly actionable: it tells you which mitigations to fund first.</p>
+<h2>Mitigations the data supports</h2>
+<h3>Techniques</h3>
+<ul>
+<li><strong>Employee training and testing.</strong> Yearly security awareness training, with more frequent random phishing tests.</li>
+<li><strong>Least privilege access.</strong> Monthly audits of server access permissions.</li>
+<li><strong>Zero trust.</strong> Audit every admin rights access request.</li>
+</ul>
+<h3>Tools</h3>
+<ul>
+<li><strong>Multi-factor authentication with physical keys.</strong> Hardware tokens for all company computer logins; hardware tokens or biometrics for mobile.</li>
+<li><strong>Supplier software and hardware maintenance.</strong> Monthly audits of supplier-implemented services and hardware for vulnerabilities.</li>
+<li><strong>Automated incident detection.</strong> Deploy the prediction model and keep investing in it.</li>
+</ul>
+<p>These align with Microsoft's Return on Mitigation (ROM) scoring methodology, which evaluates security measures on security value, potential user impact, and ease of implementation.</p>
+<h2>Future directions</h2>
+<ul>
+<li>Enhancing the model with more sophisticated machine learning techniques</li>
+<li>Better systems for collaboration and information sharing about emerging threats</li>
+<li>Moving toward a comprehensive zero trust architecture</li>
+<li>More effective proactive security awareness programmes</li>
+<li>Prioritising security investment using ROM scoring</li>
+</ul>
+<h2>Conclusion</h2>
+<p>This project demonstrates what machine learning can add to cybersecurity defence. Working with CatBoost over the GUIDE dataset makes it possible to move from reactive to proactive security, potentially preventing incidents before they reach systems and users.</p>
+<p>The four findings that matter most: Initial Access dominates at 70% of incidents; attacks concentrate in the evening, peaking at 5:00 PM; Windows systems are the overwhelming target at 90.88%; and valid accounts, not exotic exploits, are the most common way in.</p>
+<p>Address those specifically, deploy the prediction model, and an organisation's security posture improves measurably.</p>
+      </div>
+
+      <div class="card__links" style="margin-top:2.5rem"><a href="https://github.com/vidyavenkappa/Microsoft-Security-Incident-Detection" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z"/></svg>View the repository</a></div>
+
+      <nav class="post-nav" aria-label="More posts">
+        <a href="compare-ai-tools.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span><span class="label">Previous</span>Navigating the AI Research Tool Landscape</span></a>
+        <a href="balancing-act.html" style="text-align:right"><span><span class="label">Next</span>Balancing Act: Working While Studying, and Not</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p style="margin:0">© <span data-year>2026</span> Vidya Venkappa</p>
+    <nav aria-label="Footer">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../blog.html">Writing</a>
+      <a href="mailto:venkappavidya@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/vidya-venkappa/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/vidyavenkappa" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
